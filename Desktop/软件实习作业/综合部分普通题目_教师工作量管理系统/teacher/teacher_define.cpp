@@ -120,7 +120,8 @@ void teac::delete_teach_data(MYSQL &mysql,MYSQL *sock)
 
 void teac::calculate_number()
 {
-	cout<<"计算由触发器来解决"<<endl;
+
+
 }
 
 
@@ -174,9 +175,7 @@ void cour::display_cour_data(MYSQL *sock)
 
 
 	numFields = mysql_num_fields(&res);	//统计 table 字段
-	printf("%d条信息\n\n", numFields-1);
- 
-	
+
 	for(int i = 0; i < numFields; ++i)	//保存字段
 	{
 		strcpy(column[i], mysql_fetch_field(&res)->name);
