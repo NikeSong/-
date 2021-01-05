@@ -4,31 +4,36 @@ using namespace std;
 /*  其他函数的定义  */
 
 
-char show_menu()
+char show_all_menu()
 {
 	char s;
 	teac a;
 	system("cls");
-	a.head_dis();
+	a.show_head();
 	cout<<"         1. 教 师 库 管 理"<<endl<<endl<<endl<<endl;
 	cout<<"         2. 班 级 库 管 理"<<endl<<endl<<endl<<endl;
-	cout<<"         3. 课 程 库 管 理"<<endl<<endl<<endl<<endl<<endl<<endl<<endl;
+	cout<<"         3. 课 程 库 管 理"<<endl<<endl<<endl<<endl;
+	cout<<"         4. 选 课 信 息   "<<endl<<endl<<endl<<endl;
+	cout<<"         5. 信 息 综 合 展 示"<<endl<<endl<<endl<<endl;
+
 	cout<<"Tips: 按菜单序号以进入操作 "<<endl;
 	s=getch();
 	system("cls");
-	return s;
+	int c=s-'0';
+	return c;
 }
 
 
-char show_menu(string name)
+int show_menu(string name)
 {
 	char s;
 	teac a;
 	system("cls");
-	a.head_dis();
+	a.show_head();
 	cout<<"         1. 插 入 "<<name<<" 信 息"<<endl<<endl<<endl<<endl;
 	cout<<"         2. 删 除 "<<name<<" 信 息"<<endl<<endl<<endl<<endl;
-	cout<<"         3. 查 询 "<<name<<" 信 息"<<endl<<endl<<endl;
+	cout<<"         3. 查 询 "<<name<<" 信 息"<<endl<<endl<<endl<<endl;
+	cout<<"         4. 修 改 "<<name<<" 信 息"<<endl<<endl<<endl<<endl;
 	cout<<"Tips: 输入菜单序号以进入操作, 按0返回"<<endl;
 	s=getch();
 	system("cls");
@@ -43,8 +48,6 @@ int main()
 	MYSQL mysql,*sock;    // 定义数据库连接的句柄，它被用于几乎所有的 MySQL 函数
     
 	teac teac_manu;
-	cla class_manu;
-	cour course_manu;
 	
 
 	/* 进行菜单转换, 直到程序被关闭 */
@@ -59,37 +62,26 @@ int main()
 			perror("");
 			exit(1);
 		}
-		char c=show_menu();
-		if(c=='1') 
-		{
-			char s=show_menu("教 师");
-			switch(s)
-			{
-			case '1':teac_manu.insert_teach_data(mysql);break;
-			case '2':teac_manu.delete_teach_data(mysql,sock);break;
-			case '3':teac_manu.display_teach_data(sock);break;
-			}
-		}
-		else if(c=='2')
-		{
-			char s=show_menu("班 级");
-			switch(s)
-			{
-			case '1':class_manu.insert_cla_data(mysql);break;
-			case '2':class_manu.delete_cla_data(mysql,sock);break;
-			case '3':class_manu.display_cla_data(sock);break;
-			}
-		}
+		int c;
+		c=show_all_menu();
+		char ssn[10];
+		if(c==1) strcpy(ssn,"教 师");
+		else if(c==2) strcpy(ssn,"班 级");
+		else if(c==3) strcpy(ssn,"课 程");
+		else strcpy(ssn,"选 课");
+		if(c==5) teac_manu.displays(sock);
 		else
 		{
-			char s=show_menu("课 程");
+			char s=show_menu(ssn);
 			switch(s)
 			{
-			case '1':course_manu.insert_cour_data(mysql);break;
-			case '2':course_manu.delete_cour_data(mysql,sock);break;
-			case '3':course_manu.display_cour_data(sock);break;
+				case '1':teac_manu.insert(mysql,sock,c);break;
+				case '2':teac_manu.deletes(mysql,sock,c);break;
+				case '3':teac_manu.display_one(sock,c);break;
+				case '4':teac_manu.modify(mysql,sock,c);break;
 			}
 		}
+	
 		mysql_close(sock);
 	}
 	return 0;

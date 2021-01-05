@@ -16,29 +16,23 @@ using namespace std;
 class teac
 {
 public:
-	void insert_teach_data(MYSQL &mysql);
-	void display_teach_data(MYSQL *sock);
-	void delete_teach_data(MYSQL &mysql,MYSQL *sock);
-	void calculate_number();
-	void teac::head_dis();
+	void insert(MYSQL &mysql,MYSQL *sock,int tn);
+	void deletes(MYSQL &mysql,MYSQL *sock,int tn);
+	void modify(MYSQL &mysql,MYSQL *sock,int tn);
+	void displays(MYSQL *sock);
+	void display_one(MYSQL *sock,int tn);
+	void display_one(MYSQL *sock,char t[],char b[],char aa[]);
+
+	void show_head();
+
+
+	void cal_noc(MYSQL mysql,MYSQL *sock);
+	void cal_c_work_time(MYSQL mysql,MYSQL *sock);
+	void cal_t_work_time(MYSQL mysql,MYSQL *sock);
+	void cal_all_work(MYSQL mysql,MYSQL *sock);
 };
 
 
-class cour
-{
-public:
-	void insert_cour_data(MYSQL &mysql);
-	void display_cour_data(MYSQL *sock);
-	void delete_cour_data(MYSQL &mysql,MYSQL *sock);
-};
-
-class cla
-{
-public:
-	void insert_cla_data(MYSQL &mysql);
-	void display_cla_data(MYSQL *sock);
-	void delete_cla_data(MYSQL &mysql,MYSQL *sock);
-};
 
 
 
