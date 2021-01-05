@@ -56,6 +56,7 @@ int main()
 		/* init_database */
 		mysql_init(&mysql);
 		/* connect database */
+		
 		if (!(sock = mysql_real_connect(&mysql,"localhost","root","111474","softexp",0,NULL,0)))//open database
 		{
 			fprintf(stderr,"Couldn't connect to engine!  %s", mysql_error(&mysql));
@@ -81,7 +82,7 @@ int main()
 				case '4':teac_manu.modify(mysql,sock,c);break;
 			}
 		}
-	
+		teac_manu.cal_all_work(mysql,sock);
 		mysql_close(sock);
 	}
 	return 0;

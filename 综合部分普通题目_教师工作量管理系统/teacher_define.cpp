@@ -27,7 +27,7 @@ void teac::insert(MYSQL &mysql,MYSQL *sock,int tn)
 				cout<<"请依次输入教师号，教师姓名，性别，职称"<<endl;
 				char tea_num_s[50],name_s[50],gender_s[50],title_s[50];
 				cin>>tea_num_s>>name_s>>gender_s>>title_s;
-				sprintf(qbuf, "insert into teacher (tea_num,name,gender,title) values ('%s','%s','%s','%s');",tea_num_s,name_s,gender_s,title_s);
+				sprintf(qbuf, "insert into teacher (tea_num,name,gender,title,work_time) values ('%s','%s','%s','%s',0);",tea_num_s,name_s,gender_s,title_s);
 				mysql_query(&mysql,qbuf);
 				cout<<"已插入-   "<<tea_num_s<<' '<<name_s<<' '<<gender_s<<' '<<title_s<<' '<<endl;
 				break;
@@ -49,7 +49,7 @@ void teac::insert(MYSQL &mysql,MYSQL *sock,int tn)
 				char te_nu[50];
 				cin>>cour_num_s>>cour_name_s>>theo_time_s>>exp_time_s>>te_nu;
 				double all_time_s=theo_time_s+exp_time_s;
-				sprintf(qbuf, "insert into course (cours_num,cours_name,theo_time,expo_time,work_time,teacher_id) values ('%s','%s','%lf','%lf','%lf','%s');",cour_num_s,cour_name_s,theo_time_s,exp_time_s,all_time_s,te_nu);
+				sprintf(qbuf, "insert into course values ('%s','%s',%lf,%lf,0,'%s',%lf);",cour_num_s,cour_name_s,theo_time_s,exp_time_s,te_nu,all_time_s);
 				mysql_query(&mysql,qbuf);
 				cout<<"已插入-   "<<cour_num_s<<' '<<cour_name_s<<' '<<theo_time_s<<' '<<exp_time_s<<endl;
 			    break;
@@ -68,7 +68,7 @@ void teac::insert(MYSQL &mysql,MYSQL *sock,int tn)
 				int nu;
 				char cla_id_s[50],cours_id_s[50];
 				cin>>nu>>cla_id_s>>cours_id_s;
-				sprintf(qbuf, "insert into cou_cla (r_num,co_id,cl_id) values ( %d,'%s','%s');",nu,cla_id_s,cours_id_s);
+				sprintf(qbuf, "insert into cou_cla (r_num,cl_id,co_id) values ( %d,'%s','%s');",nu,cla_id_s,cours_id_s);
 				mysql_query(&mysql,qbuf);
 				cout<<"已插入-   "<<cla_id_s<<' '<<cours_id_s<<endl;
 				break;
@@ -152,13 +152,13 @@ void teac::displays(MYSQL *sock)
 	}
  	cout<<" the result is: "<<endl<<endl<<endl;
 	
-	printf("教师号\t姓名\t性别\t职称\t工作量\t课程号\t课程名\t理论\t实践\t班级数\t教师号\t课程工作量\n");
-	cout<<"------------------------------------------------------------------------------------------------"<<endl;
+	printf("%11s%11s%11s%11s%11s%10s%11s%11s%11s%11s%11s%11s\n","教师号","姓名","性别","职称","工作量","课程号","课程名","理论","实践","班级数","教师号","课程工作量");
+	cout<<"-------------------------------------------------------------------------------------------------------------------------------------"<<endl;
 	while( (row = mysql_fetch_row(&res)) != NULL )	//打印每一行的内容
 	{
 		for(int j=0; j<numFields; j++)
 		{
-			printf("%s\t",  row[j]);
+			printf("%11s",  row[j]);
 		}
 		cout<<endl;
 	}	
@@ -350,8 +350,12 @@ void teac::cal_noc(MYSQL mysql,MYSQL *sock)
 	{
 		for(int j=0; j<numFields; j++)
 		{
-			sprintf(qbuf, "update course set number_of_course = (select count(*) from cou_cla where cou_id= '%s' );",row[j]);
-			mysql_query(&mysql, qbuf);
+			sprintf(qbuf, "update course set number_of_course = (select count(*) from cou_cla where co_id= '%s' ) where cours_num='%s' ;",row[j],row[j]);
+			if(mysql_query(sock,qbuf))
+			{
+				fprintf(stderr,"Query failed! (%s)",mysql_error(sock));
+				exit(1);
+			}
 		}
 	}
 
@@ -364,47 +368,44 @@ void teac::cal_noc(MYSQL mysql,MYSQL *sock)
 void teac::cal_c_work_time(MYSQL mysql,MYSQL *sock)
 {
 	char qbuf[256];
-	MYSQL_ROW row ;  // 存放一行查询结果的字符串数组
 
 
-	sprintf(qbuf,"SELECT number_of_course FROM course;");//input sql command
+	sprintf(qbuf, "update course set work_time = theo_time+expo_time ;");
+	if(mysql_query(sock,qbuf))
+	{
+		fprintf(stderr,"Query failed! (%s)",mysql_error(sock));
+		exit(1);
+	}
+	
+	sprintf(qbuf, "update course set work_time =  1.0*work_time  where number_of_course =1 ;");
+	if(mysql_query(sock,qbuf))
+	{
+		fprintf(stderr,"Query failed! (%s)",mysql_error(sock));
+		exit(1);
+	}
+	sprintf(qbuf, "update course set work_time =  1.5*work_time  where number_of_course =2 ;");
+	if(mysql_query(sock,qbuf))
+	{
+		fprintf(stderr,"Query failed! (%s)",mysql_error(sock));
+		exit(1);
+	}
+	sprintf(qbuf, "update course set work_time =  2.0*work_time  where number_of_course =3 ;");
+	if(mysql_query(sock,qbuf))
+	{
+		fprintf(stderr,"Query failed! (%s)",mysql_error(sock));
+		exit(1);
+	}
+	sprintf(qbuf, "update course set work_time =  2.5*work_time  where number_of_course >3 ;");
 	if(mysql_query(sock,qbuf))
 	{
 		fprintf(stderr,"Query failed! (%s)",mysql_error(sock));
 		exit(1);
 	}
 
-	MYSQL_RES res; 
-	res = *mysql_store_result(sock);
-	unsigned short numFields;
-	char column[30][40];
-
-
-	numFields = mysql_num_fields(&res);	//统计 table 字段
-	
-	for(int i = 0; i < numFields; ++i)	//保存字段
-	{
-		strcpy(column[i], mysql_fetch_field(&res)->name);
-		
-	}
-
-	sprintf(qbuf, "update course set work_time = theo_time+expo_time ;");
-	mysql_query(&mysql, qbuf);
-
-
-	while( (row = mysql_fetch_row(&res)) != NULL )	//打印每一行的内容
-	{
-		double k;
-		if(*row=="1") k=1;
-		else if(*row=="2") k=1.5;
-		else if(*row=="3") k=2;
-		else k=2.5;
-		
-		sprintf(qbuf, "update course set work_time =  %lf*number_of_course ;",k);
-		mysql_query(&mysql, qbuf);
-	}
-
 }
+
+
+
 
 /*     更新每个老师的工作时间    */
 void teac::cal_t_work_time(MYSQL mysql,MYSQL *sock)
@@ -436,8 +437,12 @@ void teac::cal_t_work_time(MYSQL mysql,MYSQL *sock)
 	{
 		for(int j=0; j<numFields; j++)
 		{
-			sprintf(qbuf, "update teacher set teacher.work_time = (select sum(work_time) from course where teacher_id= %s );",row[j]);
-			mysql_query(&mysql, qbuf);
+			sprintf(qbuf, "update teacher set teacher.work_time = (select sum(work_time) from course where teacher_id= %s ) where tea_num= %s;",row[j],row[j]);
+			if(mysql_query(sock,qbuf))
+			{
+				fprintf(stderr,"Query failed! (%s)",mysql_error(sock));
+				exit(1);
+			}
 		}
 	}
 }
