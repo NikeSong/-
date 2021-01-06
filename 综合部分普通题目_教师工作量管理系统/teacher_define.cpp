@@ -278,8 +278,8 @@ void teac::modify(MYSQL &mysql,MYSQL *sock,int tn)
 	
 	char a[20],b[20];
 	if(tn==1) {strcpy(a,"teacher");strcpy(b,"tea_num");}
-	else if (tn==2) {strcpy(a,"course");strcpy(b,"cors_num");}
-	else if(tn==3) {strcpy(a,"cla");strcpy(b,"cla_num");}
+	else if (tn==2) {strcpy(a,"cla");strcpy(b,"cla_num");}
+	else if(tn==3) {strcpy(a,"course");strcpy(b,"cours_num");}
 	else  {strcpy(a,"cou_cla");strcpy(b,"r_num");}
 
 	printf("请输入要修改的%s的%s:",a,b);
@@ -376,7 +376,12 @@ void teac::cal_c_work_time(MYSQL mysql,MYSQL *sock)
 		fprintf(stderr,"Query failed! (%s)",mysql_error(sock));
 		exit(1);
 	}
-	
+	sprintf(qbuf, "update course set work_time =  0*work_time  where number_of_course =0 ;");
+	if(mysql_query(sock,qbuf))
+	{
+		fprintf(stderr,"Query failed! (%s)",mysql_error(sock));
+		exit(1);
+	}
 	sprintf(qbuf, "update course set work_time =  1.0*work_time  where number_of_course =1 ;");
 	if(mysql_query(sock,qbuf))
 	{
