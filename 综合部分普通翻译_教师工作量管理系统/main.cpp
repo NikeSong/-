@@ -1,7 +1,7 @@
 #include"teacher_h.h"
 using namespace std;
 
-/*  ÆäËûº¯ÊýµÄ¶¨Òå  */
+/*  å…¶ä»–å‡½æ•°çš„å®šä¹‰  */
 
 
 char show_all_menu()
@@ -10,13 +10,13 @@ char show_all_menu()
 	teac a;
 	system("cls");
 	a.show_head();
-	cout<<"         1. ½Ì Ê¦ ¿â ¹Ü Àí"<<endl<<endl<<endl<<endl;
-	cout<<"         2. °à ¼¶ ¿â ¹Ü Àí"<<endl<<endl<<endl<<endl;
-	cout<<"         3. ¿Î ³Ì ¿â ¹Ü Àí"<<endl<<endl<<endl<<endl;
-	cout<<"         4. Ñ¡ ¿Î ÐÅ Ï¢   "<<endl<<endl<<endl<<endl;
-	cout<<"         5. ÐÅ Ï¢ ×Û ºÏ Õ¹ Ê¾"<<endl<<endl<<endl<<endl;
+	cout<<"         1. æ•™ å¸ˆ åº“ ç®¡ ç†"<<endl<<endl<<endl<<endl;
+	cout<<"         2. ç­ çº§ åº“ ç®¡ ç†"<<endl<<endl<<endl<<endl;
+	cout<<"         3. è¯¾ ç¨‹ åº“ ç®¡ ç†"<<endl<<endl<<endl<<endl;
+	cout<<"         4. é€‰ è¯¾ ä¿¡ æ¯   "<<endl<<endl<<endl<<endl;
+	cout<<"         5. ä¿¡ æ¯ ç»¼ åˆ å±• ç¤º"<<endl<<endl<<endl<<endl;
 
-	cout<<"Tips: °´²Ëµ¥ÐòºÅÒÔ½øÈë²Ù×÷ "<<endl;
+	cout<<"Tips: æŒ‰èœå•åºå·ä»¥è¿›å…¥æ“ä½œ "<<endl;
 	s=getch();
 	system("cls");
 	int c=s-'0';
@@ -30,11 +30,11 @@ int show_menu(string name)
 	teac a;
 	system("cls");
 	a.show_head();
-	cout<<"         1. ²å Èë "<<name<<" ÐÅ Ï¢"<<endl<<endl<<endl<<endl;
-	cout<<"         2. É¾ ³ý "<<name<<" ÐÅ Ï¢"<<endl<<endl<<endl<<endl;
-	cout<<"         3. ²é Ñ¯ "<<name<<" ÐÅ Ï¢"<<endl<<endl<<endl<<endl;
-	cout<<"         4. ÐÞ ¸Ä "<<name<<" ÐÅ Ï¢"<<endl<<endl<<endl<<endl;
-	cout<<"Tips: ÊäÈë²Ëµ¥ÐòºÅÒÔ½øÈë²Ù×÷, °´0·µ»Ø"<<endl;
+	cout<<"         1. æ’ å…¥ "<<name<<" ä¿¡ æ¯"<<endl<<endl<<endl<<endl;
+	cout<<"         2. åˆ  é™¤ "<<name<<" ä¿¡ æ¯"<<endl<<endl<<endl<<endl;
+	cout<<"         3. æŸ¥ è¯¢ "<<name<<" ä¿¡ æ¯"<<endl<<endl<<endl<<endl;
+	cout<<"         4. ä¿® æ”¹ "<<name<<" ä¿¡ æ¯"<<endl<<endl<<endl<<endl;
+	cout<<"Tips: è¾“å…¥èœå•åºå·ä»¥è¿›å…¥æ“ä½œ, æŒ‰0è¿”å›ž"<<endl;
 	s=getch();
 	system("cls");
 	return s;
@@ -45,12 +45,12 @@ int show_menu(string name)
 int main()
 {
 	/* database variation */
-	MYSQL mysql,*sock;    // ¶¨ÒåÊý¾Ý¿âÁ¬½ÓµÄ¾ä±ú£¬Ëü±»ÓÃÓÚ¼¸ºõËùÓÐµÄ MySQL º¯Êý
+	MYSQL mysql,*sock;    // å®šä¹‰æ•°æ®åº“è¿žæŽ¥çš„å¥æŸ„ï¼Œå®ƒè¢«ç”¨äºŽå‡ ä¹Žæ‰€æœ‰çš„ MySQL å‡½æ•°
     
 	teac teac_manu;
 	
 
-	/* ½øÐÐ²Ëµ¥×ª»», Ö±µ½³ÌÐò±»¹Ø±Õ */
+	/* è¿›è¡Œèœå•è½¬æ¢, ç›´åˆ°ç¨‹åºè¢«å…³é—­ */
 	while(1)
 	{
 		/* init_database */
@@ -66,10 +66,10 @@ int main()
 		int c;
 		c=show_all_menu();
 		char ssn[10];
-		if(c==1) strcpy(ssn,"½Ì Ê¦");
-		else if(c==2) strcpy(ssn,"°à ¼¶");
-		else if(c==3) strcpy(ssn,"¿Î ³Ì");
-		else strcpy(ssn,"Ñ¡ ¿Î");
+		if(c==1) strcpy(ssn,"æ•™ å¸ˆ");
+		else if(c==2) strcpy(ssn,"ç­ çº§");
+		else if(c==3) strcpy(ssn,"è¯¾ ç¨‹");
+		else strcpy(ssn,"é€‰ è¯¾");
 		if(c==5) teac_manu.displays(sock);
 		else
 		{
@@ -86,4 +86,5 @@ int main()
 		mysql_close(sock);
 	}
 	return 0;
+	
 }
